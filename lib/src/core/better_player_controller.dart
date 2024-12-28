@@ -114,6 +114,7 @@ class BetterPlayerController {
 
   ///Has player been disposed.
   bool _disposed = false;
+  bool get disposed => _disposed;
 
   ///Was player playing before automatic pause.
   bool? _wasPlayingBeforePause;
@@ -219,6 +220,7 @@ class BetterPlayerController {
   }
 
   init(BetterPlayerDataSource? betterPlayerDataSource) {
+    this._disposed = false;
     this._betterPlayerControlsConfiguration =
         betterPlayerConfiguration.controlsConfiguration;
     _eventListeners.add(eventListener);

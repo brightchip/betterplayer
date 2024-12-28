@@ -13,7 +13,7 @@ import android.os.Looper
 import android.util.Log
 import android.util.LongSparseArray
 import androidx.media3.common.util.UnstableApi
-import com.alizda.better_player.BetterPlayerCache.releaseCache
+import com.jhomlala.better_player.BetterPlayerCache.releaseCache
 import io.flutter.embedding.engine.loader.FlutterLoader
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.FlutterPlugin.FlutterPluginBinding

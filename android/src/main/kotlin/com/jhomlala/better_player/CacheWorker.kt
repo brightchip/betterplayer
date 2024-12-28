@@ -5,9 +5,9 @@ import android.net.Uri
 import android.util.Log
 import androidx.annotation.OptIn
 import androidx.media3.common.util.UnstableApi
-import com.alizda.better_player.DataSourceUtils.isHTTP
-import com.alizda.better_player.DataSourceUtils.getUserAgent
-import com.alizda.better_player.DataSourceUtils.getDataSourceFactory
+import com.jhomlala.better_player.DataSourceUtils.isHTTP
+import com.jhomlala.better_player.DataSourceUtils.getUserAgent
+import com.jhomlala.better_player.DataSourceUtils.getDataSourceFactory
 import androidx.work.WorkerParameters
 import androidx.media3.datasource.cache.CacheWriter
 import androidx.work.Worker

@@ -405,7 +405,6 @@ internal class BetterPlayer(
         drmSessionManager?.let { drmSessionManager ->
             drmSessionManagerProvider = DrmSessionManagerProvider { drmSessionManager }
         }
-
         return when (type) {
             C.CONTENT_TYPE_SS -> SsMediaSource.Factory(
                 DefaultSsChunkSource.Factory(mediaDataSourceFactory),
@@ -525,7 +524,6 @@ internal class BetterPlayer(
                 !mixWithOthers
             )
         }
-
     }
 
     fun play() {

@@ -215,6 +215,10 @@ class BetterPlayerController {
     this.betterPlayerPlaylistConfiguration,
     BetterPlayerDataSource? betterPlayerDataSource,
   }) {
+    this.init(betterPlayerDataSource);
+  }
+
+  init(BetterPlayerDataSource? betterPlayerDataSource) {
     this._betterPlayerControlsConfiguration =
         betterPlayerConfiguration.controlsConfiguration;
     _eventListeners.add(eventListener);

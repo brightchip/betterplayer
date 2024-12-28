@@ -171,6 +171,8 @@ class BetterPlayerController {
   ///Are controls always visible
   bool _controlsAlwaysVisible = false;
 
+  bool playerPaused = false;
+
   ///Are controls always visible
   bool get controlsAlwaysVisible => _controlsAlwaysVisible;
 
@@ -220,7 +222,6 @@ class BetterPlayerController {
   }
 
   init(BetterPlayerDataSource? betterPlayerDataSource) {
-    this._disposed = false;
     this._betterPlayerControlsConfiguration =
         betterPlayerConfiguration.controlsConfiguration;
     _eventListeners.add(eventListener);
@@ -767,6 +768,9 @@ class BetterPlayerController {
 
   ///Listener used to handle video player changes.
   void _onVideoPlayerChanged() async {
+    if (this.playerPaused) {
+      return;
+    }
     final VideoPlayerValue currentVideoPlayerValue =
         videoPlayerController?.value ??
             VideoPlayerValue(duration: const Duration());
@@ -1299,6 +1303,7 @@ class BetterPlayerController {
         videoPlayerController!.removeListener(_onFullScreenStateChanged);
         videoPlayerController!.removeListener(_onVideoPlayerChanged);
         videoPlayerController!.dispose();
+        videoPlayerController = null;
       }
       _eventListeners.clear();
       _nextVideoTimer?.cancel();
@@ -1311,5 +1316,25 @@ class BetterPlayerController {
       ///Delete files async
       _tempFiles.forEach((file) => file.delete());
     }
+  }
+
+  resumePlayer() {
+    this.playerPaused = false;
+  }
+
+  pausePlayer() {
+    this.playerPaused = true;
+    // if (videoPlayerController != null) {
+    //   pause();
+    //   videoPlayerController!.removeListener(_onFullScreenStateChanged);
+    //   videoPlayerController!.removeListener(_onVideoPlayerChanged);
+    //   videoPlayerController!.dispose();
+    //   videoPlayerController = null;
+    // }
+    // _eventListeners.clear();
+    // _nextVideoTimer?.cancel();
+    // _nextVideoTimeStreamController.close();
+    // _controlsVisibilityStreamController.close();
+    // _videoEventStreamSubscription?.cancel();
   }
 }

@@ -344,11 +344,15 @@ internal class BetterPlayer(
         }
         exoPlayerEventListener = object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {
+                 Log.i('playbackState' + playbackState.toString());
+                 try{
                 mediaSession?.setMetadata(
                     MediaMetadataCompat.Builder()
                         .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, getDuration())
-                        .build()
-                )
+                        .build())
+                }catch(err){
+                      Log.e(err.toString());
+                 }
             }
         }
         exoPlayerEventListener?.let { exoPlayerEventListener ->

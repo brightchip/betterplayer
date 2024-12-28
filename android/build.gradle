@@ -75,6 +75,7 @@ android {
         implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycleVersion"
         implementation "androidx.annotation:annotation:$annotationVersion"
         implementation "androidx.work:work-runtime:$workVersion"
+        implementation("androidx.legacy:legacy-support-v4:1.0.0")
     }
 
     namespace 'com.jhomlala.better_player.better_player'

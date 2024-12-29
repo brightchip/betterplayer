@@ -112,6 +112,7 @@ class BetterPlayerDataSource {
     String url, {
     List<BetterPlayerSubtitlesSource>? subtitles,
     bool? liveStream,
+    String? videoExtension,
     Map<String, String>? headers,
     bool? useAsmsSubtitles,
     bool? useAsmsTracks,
@@ -133,6 +134,7 @@ class BetterPlayerDataSource {
       subtitles: subtitles,
       liveStream: liveStream,
       headers: headers,
+      videoExtension: videoExtension,
       useAsmsSubtitles: useAsmsSubtitles,
       useAsmsTracks: useAsmsTracks,
       useAsmsAudioTracks: useAsmsAudioTracks,

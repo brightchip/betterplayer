@@ -37,8 +37,6 @@ abstract class VideoPlayerPlatform {
   ///
   /// Defaults to [MethodChannelVideoPlayer].
   static VideoPlayerPlatform get instance => _instance;
-
-  // TODO(amirh): Extract common platform interface logic.
   // https://github.com/flutter/flutter/issues/43368
   static set instance(VideoPlayerPlatform instance) {
     if (!instance.isMock) {
@@ -168,7 +166,7 @@ abstract class VideoPlayerPlatform {
   }
 
   /// Returns a widget displaying the video with a given textureID.
-  Widget buildView(int? textureId) {
+  Widget buildView(int textureId) {
     throw UnimplementedError('buildView() has not been implemented.');
   }
 
@@ -225,6 +223,7 @@ class DataSource {
     this.certificateUrl,
     this.drmHeaders,
     this.activityName,
+    this.packageName,
     this.clearKey,
     this.videoExtension,
   }) : assert(uri == null || asset == null);
@@ -259,6 +258,9 @@ class DataSource {
         return 'dash';
       case VideoFormat.mp4:
         return 'mp4';
+
+      case VideoFormat.rtsp:
+        return 'rtsp';
       case VideoFormat.other:
         return 'other';
       default:
@@ -302,6 +304,8 @@ class DataSource {
   final Map<String, String>? drmHeaders;
 
   final String? activityName;
+
+  final String? packageName;
 
   final String? clearKey;
 
@@ -363,7 +367,11 @@ enum VideoFormat {
   ss,
   mp4,
 
+  /// RTSP Streaming.
+  rtsp,
+
   /// Any format other than the other ones defined in this enum.
+  ///
   other
 }
 

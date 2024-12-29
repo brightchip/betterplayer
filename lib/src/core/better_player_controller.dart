@@ -625,11 +625,13 @@ class BetterPlayerController {
     }
 
     if (_appLifecycleState == AppLifecycleState.resumed) {
+      // if (true == videoPlayerController?.value.isPlaying) {
       await videoPlayerController!.play();
       _hasCurrentDataSourceStarted = true;
       _wasPlayingBeforePause = null;
       _postEvent(BetterPlayerEvent(BetterPlayerEventType.play));
       _postControllerEvent(BetterPlayerControllerEvent.play);
+      // }
     }
   }
 

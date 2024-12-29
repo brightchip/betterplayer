@@ -448,6 +448,10 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
             return;
         }
 
+       if( _player.currentItem.status != AVPlayerStatusReadyToPlay){
+        return;
+       }
+
         CGSize size = [_player currentItem].presentationSize;
         CGFloat width = size.width;
         CGFloat height = size.height;

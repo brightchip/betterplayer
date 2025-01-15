@@ -954,9 +954,11 @@ class BetterPlayerController {
         if (visibilityFraction == 0) {
           _wasPlayingBeforePause ??= isPlaying();
           pause();
+          print('on visiable start pausing...');
         } else {
           if (_wasPlayingBeforePause == true && !isPlaying()!) {
             play();
+            print('on visiable start playing...');
           }
         }
       }
@@ -1295,7 +1297,7 @@ class BetterPlayerController {
   ///Dispose BetterPlayerController. When [forceDispose] parameter is true, then
   ///autoDispose parameter will be overridden and controller will be disposed
   ///(if it wasn't disposed before).
-  void dispose({bool forceDispose = false}) async {
+  dispose({bool forceDispose = false}) async {
     if (!betterPlayerConfiguration.autoDispose && !forceDispose) {
       return;
     }

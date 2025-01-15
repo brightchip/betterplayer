@@ -132,8 +132,8 @@ class _BetterPlayerMaterialControlsState
   void didChangeDependencies() {
     final _oldController = _betterPlayerController;
     _betterPlayerController = BetterPlayerController.of(context);
-    _controller = _betterPlayerController!.videoPlayerController;
-    _latestValue = _controller!.value;
+    _controller = _betterPlayerController?.videoPlayerController;
+    _latestValue = _controller?.value;
 
     if (_oldController != _betterPlayerController) {
       _dispose();
@@ -183,7 +183,7 @@ class _BetterPlayerMaterialControlsState
   }
 
   Widget _buildTopBar() {
-    if (!betterPlayerController!.controlsEnabled) {
+    if (false == betterPlayerController?.controlsEnabled) {
       return const SizedBox();
     }
 

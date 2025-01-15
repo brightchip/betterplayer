@@ -24,24 +24,32 @@ abstract class BetterPlayerControlsState<T extends StatefulWidget>
   void cancelAndRestartTimer();
 
   bool isVideoFinished(VideoPlayerValue? videoPlayerValue) {
-    return videoPlayerValue?.position != null &&
-        videoPlayerValue?.duration != null &&
-        videoPlayerValue!.position.inMilliseconds != 0 &&
-        videoPlayerValue.duration!.inMilliseconds != 0 &&
-        videoPlayerValue.position >= videoPlayerValue.duration!;
+    final position = videoPlayerValue?.position;
+    final duration = videoPlayerValue?.duration;
+    if (position != null && duration != null) {
+      return position.inMilliseconds != 0 &&
+          duration.inMilliseconds != 0 &&
+          position >= duration;
+    }
+    return false;
   }
 
   void skipBack() {
     if (latestValue != null) {
       cancelAndRestartTimer();
       final beginning = const Duration().inMilliseconds;
-      final skip = (latestValue!.position -
-              Duration(
-                  milliseconds: betterPlayerControlsConfiguration
-                      .backwardSkipTimeInMilliseconds))
-          .inMilliseconds;
-      betterPlayerController!
-          .seekTo(Duration(milliseconds: max(skip, beginning)));
+      final position = latestValue?.position;
+
+      if ((position != null) && (betterPlayerController != null)) {
+        final skip = (position -
+                Duration(
+                    milliseconds: betterPlayerControlsConfiguration
+                        .backwardSkipTimeInMilliseconds))
+            .inMilliseconds;
+
+        betterPlayerController
+            ?.seekTo(Duration(milliseconds: max(skip, beginning)));
+      }
     }
   }
 

@@ -1295,28 +1295,30 @@ class BetterPlayerController {
   ///Dispose BetterPlayerController. When [forceDispose] parameter is true, then
   ///autoDispose parameter will be overridden and controller will be disposed
   ///(if it wasn't disposed before).
-  void dispose({bool forceDispose = false}) {
+  void dispose({bool forceDispose = false}) async {
     if (!betterPlayerConfiguration.autoDispose && !forceDispose) {
       return;
     }
     if (!_disposed) {
       if (videoPlayerController != null) {
-        pause();
+        await pause();
         videoPlayerController!.removeListener(_onFullScreenStateChanged);
         videoPlayerController!.removeListener(_onVideoPlayerChanged);
-        videoPlayerController!.dispose();
+        await videoPlayerController!.dispose();
         videoPlayerController = null;
       }
       _eventListeners.clear();
       _nextVideoTimer?.cancel();
-      _nextVideoTimeStreamController.close();
-      _controlsVisibilityStreamController.close();
-      _videoEventStreamSubscription?.cancel();
+      await _nextVideoTimeStreamController.close();
+      await _controlsVisibilityStreamController.close();
+      await _videoEventStreamSubscription?.cancel();
       _disposed = true;
-      _controllerEventStreamController.close();
+      await _controllerEventStreamController.close();
 
       ///Delete files async
-      _tempFiles.forEach((file) => file.delete());
+      for (final file in _tempFiles) {
+        await file.delete();
+      }
     }
   }
 
@@ -1326,17 +1328,5 @@ class BetterPlayerController {
 
   pausePlayer() {
     this.playerPaused = true;
-    // if (videoPlayerController != null) {
-    //   pause();
-    //   videoPlayerController!.removeListener(_onFullScreenStateChanged);
-    //   videoPlayerController!.removeListener(_onVideoPlayerChanged);
-    //   videoPlayerController!.dispose();
-    //   videoPlayerController = null;
-    // }
-    // _eventListeners.clear();
-    // _nextVideoTimer?.cancel();
-    // _nextVideoTimeStreamController.close();
-    // _controlsVisibilityStreamController.close();
-    // _videoEventStreamSubscription?.cancel();
   }
 }

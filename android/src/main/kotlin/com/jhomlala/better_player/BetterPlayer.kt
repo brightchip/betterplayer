@@ -369,7 +369,6 @@ internal class BetterPlayer(
                 FORMAT_HLS -> C.CONTENT_TYPE_HLS
                 FORMAT_OTHER -> C.CONTENT_TYPE_OTHER
                 FORMAT_RTSP -> C.CONTENT_TYPE_RTSP
-                FORMAT_MP4 -> C.CONTENT_TYPE_MP4
                 else -> -1
             }
         }
@@ -430,13 +429,6 @@ internal class BetterPlayer(
                 }
                 .createMediaSource(mediaItem)
 
-            C.CONTENT_TYPE_MP4 -> ProgressiveMediaSource.Factory(mediaDataSourceFactory)
-                .apply {
-                    if (drmSessionManagerProvider != null) {
-                        setDrmSessionManagerProvider(drmSessionManagerProvider!!)
-                    }
-                }
-                .createMediaSource(mediaItem)
 
             else -> {
                 throw IllegalStateException("Unsupported type: $type")
@@ -740,7 +732,6 @@ internal class BetterPlayer(
         private const val FORMAT_SS = "ss"
         private const val FORMAT_DASH = "dash"
         private const val FORMAT_HLS = "hls"
-        private const val FORMAT_MP4 = "mp4"
         private const val FORMAT_RTSP = "rtsp"
         private const val FORMAT_OTHER = "other"
         private const val DEFAULT_NOTIFICATION_CHANNEL = "BETTER_PLAYER_NOTIFICATION"

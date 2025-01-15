@@ -137,7 +137,7 @@ class _BetterPlayerCupertinoControlsState
   }
 
   void _dispose() {
-    _controller!.removeListener(_updateState);
+    _controller?.removeListener(_updateState);
     _hideTimer?.cancel();
     _expandCollapseTimer?.cancel();
     _initTimer?.cancel();

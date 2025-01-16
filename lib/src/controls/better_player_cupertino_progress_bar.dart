@@ -55,18 +55,21 @@ class _VideoProgressBarState
   @override
   void initState() {
     super.initState();
-    controller!.addListener(listener);
+    controller?.addListener(listener);
   }
 
   @override
   void deactivate() {
-    controller!.removeListener(listener);
+    controller?.removeListener(listener);
     _cancelUpdateBlockTimer();
     super.deactivate();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (betterPlayerController == null) {
+      return SizedBox();
+    }
     final bool enableProgressBarDrag = betterPlayerController!
         .betterPlayerControlsConfiguration.enableProgressBarDrag;
     return GestureDetector(
@@ -155,6 +158,9 @@ class _VideoProgressBarState
   }
 
   void seekToRelativePosition(Offset globalPosition) async {
+    if (null == controller) {
+      return;
+    }
     final RenderObject? renderObject = context.findRenderObject();
     if (renderObject != null) {
       final box = renderObject as RenderBox;

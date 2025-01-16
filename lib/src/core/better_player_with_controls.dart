@@ -36,6 +36,9 @@ class _BetterPlayerWithControlsState extends State<BetterPlayerWithControls> {
 
   @override
   void initState() {
+    if (null == widget.controller) {
+      return;
+    }
     playerVisibilityStreamController.add(true);
     _controllerEventSubscription =
         widget.controller!.controllerEventStream.listen(_onControllerChanged);
@@ -252,8 +255,8 @@ class _BetterPlayerVideoFitWidgetState
     super.didUpdateWidget(oldWidget);
     if (oldWidget.betterPlayerController.videoPlayerController != controller) {
       if (_initializedListener != null) {
-        oldWidget.betterPlayerController.videoPlayerController!
-            .removeListener(_initializedListener!);
+        oldWidget.betterPlayerController.videoPlayerController
+            ?.removeListener(_initializedListener!);
       }
       _initialized = false;
       _initialize();
@@ -306,8 +309,8 @@ class _BetterPlayerVideoFitWidgetState
             child: FittedBox(
               fit: widget.boxFit,
               child: SizedBox(
-                width: controller!.value.size?.width ?? 0,
-                height: controller!.value.size?.height ?? 0,
+                width: controller?.value.size?.width ?? 0,
+                height: controller?.value.size?.height ?? 0,
                 child: VideoPlayer(controller),
               ),
             ),

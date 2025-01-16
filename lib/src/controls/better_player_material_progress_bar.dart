@@ -54,18 +54,21 @@ class _VideoProgressBarState
   @override
   void initState() {
     super.initState();
-    controller!.addListener(listener);
+    controller?.addListener(listener);
   }
 
   @override
   void deactivate() {
-    controller!.removeListener(listener);
+    controller?.removeListener(listener);
     _cancelUpdateBlockTimer();
     super.deactivate();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (null == controller) {
+      return SizedBox();
+    }
     final bool enableProgressBarDrag = betterPlayerController!
         .betterPlayerConfiguration.controlsConfiguration.enableProgressBarDrag;
 

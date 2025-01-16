@@ -669,24 +669,28 @@ class _VideoPlayerState extends State<VideoPlayer> {
   @override
   void initState() {
     super.initState();
-    _textureId = widget.controller!.textureId;
+    _textureId = widget.controller?.textureId;
     // Need to listen for initialization events since the actual texture ID
     // becomes available after asynchronous initialization finishes.
-    widget.controller!.addListener(_listener);
+    widget.controller?.addListener(_listener);
   }
 
   @override
   void didUpdateWidget(VideoPlayer oldWidget) {
     super.didUpdateWidget(oldWidget);
-    oldWidget.controller!.removeListener(_listener);
-    _textureId = widget.controller!.textureId;
-    widget.controller!.addListener(_listener);
+    if (null != oldWidget.controller) {
+      oldWidget.controller?.removeListener(_listener);
+    }
+    if (null != widget.controller) {
+      _textureId = widget.controller?.textureId;
+      widget.controller?.addListener(_listener);
+    }
   }
 
   @override
   void deactivate() {
     super.deactivate();
-    widget.controller!.removeListener(_listener);
+    widget.controller?.removeListener(_listener);
   }
 
   @override
@@ -759,7 +763,7 @@ class _VideoScrubberState extends State<_VideoScrubber> {
   Widget build(BuildContext context) {
     void seekToRelativePosition(Offset globalPosition) {
       final RenderObject? renderObject = context.findRenderObject();
-      if (renderObject != null) {
+      if ((renderObject != null) && (controller.value.duration != null)) {
         final RenderBox box = renderObject as RenderBox;
         final Offset tapPos = box.globalToLocal(globalPosition);
         final double relative = tapPos.dx / box.size.width;
@@ -880,7 +884,7 @@ class _VideoProgressIndicatorState extends State<VideoProgressIndicator> {
   @override
   Widget build(BuildContext context) {
     Widget progressIndicator;
-    if (controller.value.initialized) {
+    if (controller.value.initialized && (null != controller.value.duration)) {
       final int duration = controller.value.duration!.inMilliseconds;
       final int position = controller.value.position.inMilliseconds;
 

@@ -44,6 +44,9 @@ class BetterPlayerPlaylistState extends State<BetterPlayerPlaylist> {
 
   @override
   Widget build(BuildContext context) {
+    if (null == _betterPlayerController) {
+      return SizedBox();
+    }
     return AspectRatio(
       aspectRatio: _betterPlayerController!.getAspectRatio() ??
           BetterPlayerUtils.calculateAspectRatio(context),

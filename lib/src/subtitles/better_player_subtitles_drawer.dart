@@ -53,8 +53,12 @@ class _BetterPlayerSubtitlesDrawerState
       _configuration = setupDefaultConfiguration();
     }
 
-    widget.betterPlayerController.videoPlayerController!
-        .addListener(_updateState);
+    if (null == _configuration) {
+      _configuration = setupDefaultConfiguration();
+    }
+
+    widget.betterPlayerController.videoPlayerController
+        ?.addListener(_updateState);
 
     _outerTextStyle = TextStyle(
         fontSize: _configuration!.fontSize,
@@ -85,7 +89,7 @@ class _BetterPlayerSubtitlesDrawerState
     if (mounted) {
       setState(() {
         _latestValue =
-            widget.betterPlayerController.videoPlayerController!.value;
+            widget.betterPlayerController.videoPlayerController?.value;
       });
     }
   }

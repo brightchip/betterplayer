@@ -21,6 +21,7 @@ class BetterPlayerController {
   static const String _speedParameter = "speed";
   static const String _dataSourceParameter = "dataSource";
   static const String _authorizationHeader = "Authorization";
+  static const String _uniqueIdParameter = "uniqueId";
 
   ///General configuration used in controller instance.
   final BetterPlayerConfiguration betterPlayerConfiguration;
@@ -65,6 +66,8 @@ class BetterPlayerController {
 
   ///Time when last progress event was sent
   int _lastPositionSelection = 0;
+
+  String? uniqueId;
 
   ///Currently used data source in player.
   BetterPlayerDataSource? _betterPlayerDataSource;
@@ -663,7 +666,10 @@ class BetterPlayerController {
       throw StateError("The video has not been initialized yet.");
     }
 
-    await videoPlayerController!.seekTo(moment);
+    if (null == videoPlayerController) {
+      return;
+    }
+    await videoPlayerController?.seekTo(moment);
 
     _postEvent(BetterPlayerEvent(BetterPlayerEventType.seekTo,
         parameters: <String, dynamic>{_durationParameter: moment}));
@@ -819,7 +825,8 @@ class BetterPlayerController {
           BetterPlayerEventType.progress,
           parameters: <String, dynamic>{
             _progressParameter: currentVideoPlayerValue.position,
-            _durationParameter: currentVideoPlayerValue.duration
+            _durationParameter: currentVideoPlayerValue.duration,
+            _uniqueIdParameter: this.uniqueId,
           },
         ),
       );
@@ -827,8 +834,10 @@ class BetterPlayerController {
   }
 
   ///Add event listener which listens to player events.
-  void addEventsListener(Function(BetterPlayerEvent) eventListener) {
+  void addEventsListener(Function(BetterPlayerEvent) eventListener,
+      {String? uniqueId}) {
     _eventListeners.add(eventListener);
+    this.uniqueId = uniqueId;
   }
 
   ///Remove event listener. This method should be called once you're disposing
@@ -1163,7 +1172,8 @@ class BetterPlayerController {
             BetterPlayerEventType.finished,
             parameters: <String, dynamic>{
               _progressParameter: videoValue?.position,
-              _durationParameter: videoValue?.duration
+              _durationParameter: videoValue?.duration,
+              _uniqueIdParameter: this.uniqueId,
             },
           ),
         );

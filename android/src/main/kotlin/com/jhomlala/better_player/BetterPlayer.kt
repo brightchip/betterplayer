@@ -460,7 +460,7 @@ internal class BetterPlayer(
                 if(isPlaying){
                     event["event"] = "play"
                     eventSink.success(event)
-                }else{
+                }else {
                     event["event"] = "pause"
                     eventSink.success(event)
                 }

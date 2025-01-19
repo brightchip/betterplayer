@@ -69,6 +69,9 @@ class _VideoProgressBarState
     if (null == controller) {
       return SizedBox();
     }
+    if (betterPlayerController == null) {
+      return SizedBox();
+    }
     final bool enableProgressBarDrag = betterPlayerController!
         .betterPlayerConfiguration.controlsConfiguration.enableProgressBarDrag;
 

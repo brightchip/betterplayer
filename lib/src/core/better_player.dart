@@ -237,10 +237,10 @@ class _BetterPlayerState extends State<BetterPlayer>
       }
       await SystemChrome.setPreferredOrientations(deviceOrientations);
     } else {
-      await SystemChrome.setPreferredOrientations(
-        widget.controller.betterPlayerConfiguration
-            .deviceOrientationsOnFullScreen,
-      );
+      // await SystemChrome.setPreferredOrientations(
+      //   widget.controller.betterPlayerConfiguration
+      //       .deviceOrientationsOnFullScreen,
+      // );
     }
 
     if (!_betterPlayerConfiguration.allowedScreenSleep) {
@@ -257,8 +257,8 @@ class _BetterPlayerState extends State<BetterPlayer>
 
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
         overlays: _betterPlayerConfiguration.systemOverlaysAfterFullScreen);
-    await SystemChrome.setPreferredOrientations(
-        _betterPlayerConfiguration.deviceOrientationsAfterFullScreen);
+    // await SystemChrome.setPreferredOrientations(
+    //     _betterPlayerConfiguration.deviceOrientationsAfterFullScreen);
   }
 
   Widget _buildPlayer() {

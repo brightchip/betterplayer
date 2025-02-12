@@ -56,6 +56,15 @@ abstract class BetterPlayerControlsState<T extends StatefulWidget>
   void skipForward() {
     if (latestValue != null) {
       cancelAndRestartTimer();
+      if (null == latestValue!.duration) {
+        return;
+      }
+      if (null == latestValue?.position) {
+        return;
+      }
+      if (null == betterPlayerController) {
+        return;
+      }
       final end = latestValue!.duration!.inMilliseconds;
       final skip = (latestValue!.position +
               Duration(

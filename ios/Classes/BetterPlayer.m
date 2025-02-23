@@ -45,6 +45,7 @@ AVPictureInPictureController *_pipController;
 
 - (void)addObservers:(AVPlayerItem*)item {
     if (!self._observersAdded){
+       @try {
         [_player addObserver:self forKeyPath:@"rate" options:0 context:nil];
         [item addObserver:self forKeyPath:@"loadedTimeRanges" options:0 context:timeRangeContext];
         [item addObserver:self forKeyPath:@"status" options:0 context:statusContext];
@@ -66,6 +67,10 @@ AVPictureInPictureController *_pipController;
                                                      name:AVPlayerItemDidPlayToEndTimeNotification
                                                    object:item];
         self._observersAdded = true;
+        }
+        @catch (NSException *exception) {
+            NSLog(@"%@", exception.reason);
+        }
     }
 }
 
@@ -90,6 +95,8 @@ AVPictureInPictureController *_pipController;
 
 - (void) removeObservers{
     if (self._observersAdded){
+         @try {
+                self._observersAdded = false;
         [_player removeObserver:self forKeyPath:@"rate" context:nil];
         [[_player currentItem] removeObserver:self forKeyPath:@"status" context:statusContext];
         [[_player currentItem] removeObserver:self forKeyPath:@"presentationSize" context:presentationSizeContext];
@@ -106,7 +113,12 @@ AVPictureInPictureController *_pipController;
                                    forKeyPath:@"playbackBufferFull"
                                       context:playbackBufferFullContext];
         [[NSNotificationCenter defaultCenter] removeObserver:self];
-        self._observersAdded = false;
+
+               }
+        @catch (NSException *exception) {
+            NSLog(@"%@", exception.reason);
+        }
+
     }
 }
 

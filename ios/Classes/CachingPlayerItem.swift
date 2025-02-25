@@ -1,5 +1,3 @@
-//  Based on https://github.com/neekeetab/CachingPlayerItem.
-
 import Foundation
 import AVFoundation
 
@@ -66,9 +64,12 @@ open class CachingPlayerItem: AVPlayerItem {
         
         func startDataRequest(url: URL) {
             let configuration = URLSessionConfiguration.default
+            configuration.timeoutIntervalForResource = 3600
+            configuration.timeoutIntervalForRequest = 180
+            configuration.waitsForConnectivity = true
             configuration.requestCachePolicy = .reloadIgnoringLocalAndRemoteCacheData
             session = URLSession(configuration: configuration, delegate: self, delegateQueue: nil)
-            var request = URLRequest(url: self.originalURL ?? url)
+            var request = URLRequest(url: self.originalURL ?? url, timeoutInterval: 180)
             request.httpMethod = "GET"
             let headersString = self.headers as? [String:AnyObject]
             if let unwrappedDict = headersString {
@@ -92,6 +93,7 @@ open class CachingPlayerItem: AVPlayerItem {
         
         func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
             mediaData?.append(data)
+            // print("appening data....")
             processPendingRequests()
             owner?.delegate?.playerItem?(owner!, didDownloadBytesSoFar: mediaData!.count, outOf: Int(dataTask.countOfBytesExpectedToReceive))
         }
@@ -146,7 +148,8 @@ open class CachingPlayerItem: AVPlayerItem {
                 return
             }
             
-            contentInformationRequest?.contentType = responseUnwrapped.mimeType
+            contentInformationRequest?.contentType =  self.mimeType //"video/mp4" // responseUnwrapped.mimeType
+            // print( responseUnwrapped.mimeType);
             contentInformationRequest?.contentLength = responseUnwrapped.expectedContentLength
             contentInformationRequest?.isByteRangeAccessSupported = true
             

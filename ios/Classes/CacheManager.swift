@@ -12,8 +12,8 @@ import PINCache
 
     var completionHandler: ((_ success:Bool) -> Void)? = nil
 
-    var diskConfig = DiskConfig(name: "BetterPlayerCache", expiry: .date(Date().addingTimeInterval(3600*24*30)),
-                                maxSize: 100*1024*1024)
+    var diskConfig = DiskConfig(name: "BetterPlayerCache", expiry: .date(Date().addingTimeInterval(3600*24*3)),
+                                maxSize: 1000*1024*1024)
     
     // Flag whether the CachingPlayerItem was already cached.
     var _existsInStorage: Bool = false
@@ -48,7 +48,7 @@ import PINCache
     @objc public func setMaxCacheSize(_ maxCacheSize: NSNumber?){
         if let unsigned = maxCacheSize {
             let _maxCacheSize = unsigned.uintValue
-            diskConfig = DiskConfig(name: "BetterPlayerCache", expiry: .date(Date().addingTimeInterval(3600*24*30)), maxSize: _maxCacheSize)
+            diskConfig = DiskConfig(name: "BetterPlayerCache", expiry: .date(Date().addingTimeInterval(3600*24*3)), maxSize: _maxCacheSize)
         }        
     }
 

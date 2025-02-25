@@ -226,13 +226,17 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
         item = [cacheManager getCachingPlayerItemForNormalPlayback:url cacheKey:cacheKey videoExtension: videoExtension headers:headers];
     } else {
         
-        NSString* mimeType;
+
         if(@"mp4" == videoExtension){
-            mimeType = @"video/mp4";
-        }
-        AVURLAsset* asset = [AVURLAsset URLAssetWithURL:url
-                                                options:@{@"AVURLAssetHTTPHeaderFieldsKey" : headers , @"AVURLAssetOutOfBandMIMETypeKey" : mimeType}                                          
+             AVURLAsset* asset = [AVURLAsset URLAssetWithURL:url
+                                                options:@{@"AVURLAssetHTTPHeaderFieldsKey" : headers , @"AVURLAssetOutOfBandMIMETypeKey" : @"video/mp4"}                                          
             ];
+        }else{
+             AVURLAsset* asset = [AVURLAsset URLAssetWithURL:url
+                                                options:@{@"AVURLAssetHTTPHeaderFieldsKey" : headers}                                          
+            ];
+        }
+       
         if (certificateUrl && certificateUrl != [NSNull null] && [certificateUrl length] > 0) {
             NSURL * certificateNSURL = [[NSURL alloc] initWithString: certificateUrl];
             NSURL * licenseNSURL = [[NSURL alloc] initWithString: licenseUrl];

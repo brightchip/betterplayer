@@ -227,8 +227,13 @@ open class CachingPlayerItem: AVPlayerItem {
             self.customFileExtension = ext
             self.resourceLoaderDelegate.originalURL = url
         }
-        
-        let asset = AVURLAsset(url: urlWithCustomScheme)
+
+       var tmpOps:[String : Any]?;
+        if "mp4" == customFileExtension{
+           tmpOps = ["AVURLAssetOutOfBandMIMETypeKey" : "video/mp4" ]
+           print("AVURLAssetOutOfBandMIMETypeKey")
+        }
+        let asset = AVURLAsset(url: urlWithCustomScheme,options: tmpOps)
         asset.resourceLoader.setDelegate(resourceLoaderDelegate, queue: DispatchQueue.main)
         super.init(asset: asset, automaticallyLoadedAssetKeys: nil)
         

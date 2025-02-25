@@ -226,13 +226,13 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
         item = [cacheManager getCachingPlayerItemForNormalPlayback:url cacheKey:cacheKey videoExtension: videoExtension headers:headers];
     } else {
         
-
+        AVURLAsset* asset;
         if(@"mp4" == videoExtension){
-             AVURLAsset* asset = [AVURLAsset URLAssetWithURL:url
+             asset = [AVURLAsset URLAssetWithURL:url
                                                 options:@{@"AVURLAssetHTTPHeaderFieldsKey" : headers , @"AVURLAssetOutOfBandMIMETypeKey" : @"video/mp4"}                                          
             ];
         }else{
-             AVURLAsset* asset = [AVURLAsset URLAssetWithURL:url
+            asset = [AVURLAsset URLAssetWithURL:url
                                                 options:@{@"AVURLAssetHTTPHeaderFieldsKey" : headers}                                          
             ];
         }

@@ -148,7 +148,7 @@ open class CachingPlayerItem: AVPlayerItem {
                 return
             }
             
-            contentInformationRequest?.contentType =  self.mimeType //"video/mp4" // responseUnwrapped.mimeType
+            contentInformationRequest?.contentType =  self.mimeType ?? responseUnwrapped.mimeType
             // print( responseUnwrapped.mimeType);
             contentInformationRequest?.contentLength = responseUnwrapped.expectedContentLength
             contentInformationRequest?.isByteRangeAccessSupported = true

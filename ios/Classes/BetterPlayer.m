@@ -227,16 +227,28 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
     } else {
         
         AVURLAsset* asset;
-        if(@"mp4" == videoExtension){
-             asset = [AVURLAsset URLAssetWithURL:url
+
+        bool cusMime = false;
+
+   if ([videoExtension isKindOfClass:[NSNull class]]) {
+
+    }else if([videoExtension isEqualToString:@"mp4"]){
+        cusMime = true ;
+    }
+        
+        if(cusMime){
+   asset = [AVURLAsset URLAssetWithURL:url
                                                 options:@{@"AVURLAssetHTTPHeaderFieldsKey" : headers , @"AVURLAssetOutOfBandMIMETypeKey" : @"video/mp4"}                                          
             ];
+                    //  NSLog(@"videoExtension mp4 %@ %@",videoExtension,url);
         }else{
             asset = [AVURLAsset URLAssetWithURL:url
                                                 options:@{@"AVURLAssetHTTPHeaderFieldsKey" : headers}                                          
             ];
+
+            //    NSLog(@"videoExtension non mp4 %@ %@",videoExtension,url);
         }
-       
+        //  NSLog(@"videoExtension %@",videoExtension,@"mp4" == videoExtension);
         if (certificateUrl && certificateUrl != [NSNull null] && [certificateUrl length] > 0) {
             NSURL * certificateNSURL = [[NSURL alloc] initWithString: certificateUrl];
             NSURL * licenseNSURL = [[NSURL alloc] initWithString: licenseUrl];

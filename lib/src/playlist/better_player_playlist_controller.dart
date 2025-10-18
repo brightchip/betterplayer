@@ -3,14 +3,6 @@ import 'package:better_player_plus/better_player_plus.dart';
 
 ///Controller used to manage playlist player.
 class BetterPlayerPlaylistController {
-  BetterPlayerPlaylistController(
-    this._betterPlayerDataSourceList, {
-    this.betterPlayerConfiguration = const BetterPlayerConfiguration(),
-    this.betterPlayerPlaylistConfiguration = const BetterPlayerPlaylistConfiguration(),
-  }) : assert(_betterPlayerDataSourceList.isNotEmpty, "Better Player data source list can't be empty") {
-    _setup();
-  }
-
   ///List of data sources set for playlist.
   final List<BetterPlayerDataSource> _betterPlayerDataSourceList;
 
@@ -32,6 +24,16 @@ class BetterPlayerPlaylistController {
   ///Flag that determines whenever player is changing video
   bool _changingToNextVideo = false;
 
+  BetterPlayerPlaylistController(
+    this._betterPlayerDataSourceList, {
+    this.betterPlayerConfiguration = const BetterPlayerConfiguration(),
+    this.betterPlayerPlaylistConfiguration =
+        const BetterPlayerPlaylistConfiguration(),
+  }) : assert(_betterPlayerDataSourceList.isNotEmpty,
+            "Better Player data source list can't be empty") {
+    _setup();
+  }
+
   ///Initialize controller and listeners.
   void _setup() {
     _betterPlayerController ??= BetterPlayerController(
@@ -47,7 +49,8 @@ class BetterPlayerPlaylistController {
     _currentDataSourceIndex = initialStartIndex;
     setupDataSource(_currentDataSourceIndex);
     _betterPlayerController!.addEventsListener(_handleEvent);
-    _nextVideoTimeStreamSubscription = _betterPlayerController!.nextVideoTimeStream.listen((time) {
+    _nextVideoTimeStreamSubscription =
+        _betterPlayerController!.nextVideoTimeStream.listen((time) {
       if (time != null && time == 0) {
         _onVideoChange();
       }
@@ -85,7 +88,8 @@ class BetterPlayerPlaylistController {
   ///Handle BetterPlayerEvent from BetterPlayerController. Used to control
   ///startup of next video timer.
   void _handleEvent(BetterPlayerEvent betterPlayerEvent) {
-    if (betterPlayerEvent.betterPlayerEventType == BetterPlayerEventType.finished) {
+    if (betterPlayerEvent.betterPlayerEventType ==
+        BetterPlayerEventType.finished) {
       if (_getNextDataSourceIndex() != -1) {
         _betterPlayerController!.startNextVideoTimer();
       }
@@ -96,13 +100,13 @@ class BetterPlayerPlaylistController {
   ///in constructor. Index must
   void setupDataSource(int index) {
     assert(
-      index >= 0 && index < _betterPlayerDataSourceList.length,
-      'Index must be greater than 0 and less than size of data source '
-      'list - 1',
-    );
+        index >= 0 && index < _betterPlayerDataSourceList.length,
+        "Index must be greater than 0 and less than size of data source "
+        "list - 1");
     if (index <= _dataSourceLength) {
       _currentDataSourceIndex = index;
-      _betterPlayerController!.setupDataSource(_betterPlayerDataSourceList[index]);
+      _betterPlayerController!
+          .setupDataSource(_betterPlayerDataSourceList[index]);
     }
   }
 

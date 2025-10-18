@@ -17,10 +17,14 @@ class HlsMediaPlaylist extends HlsPlaylist {
     required this.protectionSchemes,
     required this.segments,
     required this.durationUs,
-    required String super.baseUri,
-    required super.tags,
-    required super.hasIndependentSegments,
-  });
+    required String baseUri,
+    required List<String> tags,
+    required bool hasIndependentSegments,
+  }) : super(
+          baseUri: baseUri,
+          tags: tags,
+          hasIndependentSegments: hasIndependentSegments,
+        );
 
   factory HlsMediaPlaylist.create({
     required int playlistType,

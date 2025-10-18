@@ -9,7 +9,8 @@ class Metadata {
   @override
   bool operator ==(Object other) {
     if (other is Metadata) {
-      return const ListEquality<HlsTrackMetadataEntry>().equals(other.list, list);
+      return const ListEquality<HlsTrackMetadataEntry>()
+          .equals(other.list, list);
     }
     return false;
   }

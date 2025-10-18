@@ -60,7 +60,7 @@ dependencies:
 Import the package:
 
 ```dart
-import 'package:better_player_plus/better_player_plus.dart';
+import 'package:better_player_plus_plus/better_player_plus.dart';
 ```
 
 ### Quick start

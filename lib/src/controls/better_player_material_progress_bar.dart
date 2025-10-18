@@ -1,5 +1,3 @@
-// ignore_for_file: cascade_invocations
-
 import 'dart:async';
 import 'package:better_player_plus/better_player_plus.dart';
 import 'package:better_player_plus/src/video_player/video_player.dart';
@@ -15,8 +13,9 @@ class BetterPlayerMaterialVideoProgressBar extends StatefulWidget {
     this.onDragStart,
     this.onDragUpdate,
     this.onTapDown,
-    super.key,
-  }) : colors = colors ?? BetterPlayerProgressColors();
+    Key? key,
+  })  : colors = colors ?? BetterPlayerProgressColors(),
+        super(key: key);
 
   final VideoPlayerController? controller;
   final BetterPlayerController? betterPlayerController;
@@ -27,15 +26,16 @@ class BetterPlayerMaterialVideoProgressBar extends StatefulWidget {
   final Function()? onTapDown;
 
   @override
-  State<BetterPlayerMaterialVideoProgressBar> createState() => _VideoProgressBarState();
+  _VideoProgressBarState createState() {
+    return _VideoProgressBarState();
+  }
 }
 
-class _VideoProgressBarState extends State<BetterPlayerMaterialVideoProgressBar> {
+class _VideoProgressBarState
+    extends State<BetterPlayerMaterialVideoProgressBar> {
   _VideoProgressBarState() {
     listener = () {
-      if (mounted) {
-        setState(() {});
-      }
+      if (mounted) setState(() {});
     };
   }
 
@@ -44,7 +44,8 @@ class _VideoProgressBarState extends State<BetterPlayerMaterialVideoProgressBar>
 
   VideoPlayerController? get controller => widget.controller;
 
-  BetterPlayerController? get betterPlayerController => widget.betterPlayerController;
+  BetterPlayerController? get betterPlayerController =>
+      widget.betterPlayerController;
 
   bool shouldPlayAfterDragEnd = false;
   Duration? lastSeek;
@@ -53,20 +54,26 @@ class _VideoProgressBarState extends State<BetterPlayerMaterialVideoProgressBar>
   @override
   void initState() {
     super.initState();
-    controller!.addListener(listener);
+    controller?.addListener(listener);
   }
 
   @override
   void deactivate() {
-    controller!.removeListener(listener);
+    controller?.removeListener(listener);
     _cancelUpdateBlockTimer();
     super.deactivate();
   }
 
   @override
   Widget build(BuildContext context) {
-    final bool enableProgressBarDrag =
-        betterPlayerController!.betterPlayerConfiguration.controlsConfiguration.enableProgressBarDrag;
+    if (null == controller) {
+      return SizedBox();
+    }
+    if (betterPlayerController == null) {
+      return SizedBox();
+    }
+    final bool enableProgressBarDrag = betterPlayerController!
+        .betterPlayerConfiguration.controlsConfiguration.enableProgressBarDrag;
 
     return GestureDetector(
       onHorizontalDragStart: (DragStartDetails details) {
@@ -124,7 +131,12 @@ class _VideoProgressBarState extends State<BetterPlayerMaterialVideoProgressBar>
           height: MediaQuery.of(context).size.height / 2,
           width: MediaQuery.of(context).size.width,
           color: Colors.transparent,
-          child: CustomPaint(painter: _ProgressBarPainter(_getValue(), widget.colors)),
+          child: CustomPaint(
+            painter: _ProgressBarPainter(
+              _getValue(),
+              widget.colors,
+            ),
+          ),
         ),
       ),
     );
@@ -150,7 +162,7 @@ class _VideoProgressBarState extends State<BetterPlayerMaterialVideoProgressBar>
     }
   }
 
-  Future<void> seekToRelativePosition(Offset globalPosition) async {
+  void seekToRelativePosition(Offset globalPosition) async {
     final RenderObject? renderObject = context.findRenderObject();
     if (renderObject != null) {
       final box = renderObject as RenderBox;
@@ -185,7 +197,9 @@ class _ProgressBarPainter extends CustomPainter {
   BetterPlayerProgressColors colors;
 
   @override
-  bool shouldRepaint(CustomPainter painter) => true;
+  bool shouldRepaint(CustomPainter painter) {
+    return true;
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -193,19 +207,24 @@ class _ProgressBarPainter extends CustomPainter {
 
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        Rect.fromPoints(Offset(0, size.height / 2), Offset(size.width, size.height / 2 + height)),
-        const Radius.circular(4),
+        Rect.fromPoints(
+          Offset(0.0, size.height / 2),
+          Offset(size.width, size.height / 2 + height),
+        ),
+        const Radius.circular(4.0),
       ),
       colors.backgroundPaint,
     );
     if (!value.initialized) {
       return;
     }
-    double playedPartPercent = value.position.inMilliseconds / value.duration!.inMilliseconds;
+    double playedPartPercent =
+        value.position.inMilliseconds / value.duration!.inMilliseconds;
     if (playedPartPercent.isNaN) {
       playedPartPercent = 0;
     }
-    final double playedPart = playedPartPercent > 1 ? size.width : playedPartPercent * size.width;
+    final double playedPart =
+        playedPartPercent > 1 ? size.width : playedPartPercent * size.width;
     for (final DurationRange range in value.buffered) {
       double start = range.startFraction(value.duration!) * size.width;
       if (start.isNaN) {
@@ -217,19 +236,29 @@ class _ProgressBarPainter extends CustomPainter {
       }
       canvas.drawRRect(
         RRect.fromRectAndRadius(
-          Rect.fromPoints(Offset(start, size.height / 2), Offset(end, size.height / 2 + height)),
-          const Radius.circular(4),
+          Rect.fromPoints(
+            Offset(start, size.height / 2),
+            Offset(end, size.height / 2 + height),
+          ),
+          const Radius.circular(4.0),
         ),
         colors.bufferedPaint,
       );
     }
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        Rect.fromPoints(Offset(0, size.height / 2), Offset(playedPart, size.height / 2 + height)),
-        const Radius.circular(4),
+        Rect.fromPoints(
+          Offset(0.0, size.height / 2),
+          Offset(playedPart, size.height / 2 + height),
+        ),
+        const Radius.circular(4.0),
       ),
       colors.playedPaint,
     );
-    canvas.drawCircle(Offset(playedPart, size.height / 2 + height / 2), height * 3, colors.handlePaint);
+    canvas.drawCircle(
+      Offset(playedPart, size.height / 2 + height / 2),
+      height * 3,
+      colors.handlePaint,
+    );
   }
 }

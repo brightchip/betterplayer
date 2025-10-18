@@ -1,5 +1,9 @@
 abstract class HlsPlaylist {
-  HlsPlaylist({required this.baseUri, required this.tags, required this.hasIndependentSegments});
+  HlsPlaylist({
+    required this.baseUri,
+    required this.tags,
+    required this.hasIndependentSegments,
+  });
 
   /// The base uri. Used to resolve relative paths.
   final String? baseUri;

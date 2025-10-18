@@ -30,7 +30,7 @@ public class SwiftBetterPlayerPlugin: NSObject, FlutterPlugin, FlutterPlatformVi
         let channel = FlutterMethodChannel(name: "better_player_channel", binaryMessenger: registrar.messenger())
         let instance = SwiftBetterPlayerPlugin(registrar: registrar)
         registrar.addMethodCallDelegate(instance, channel: channel)
-        registrar.register(instance, withId: "com.jhomlala/better_player")
+        registrar.register(instance, withId: "com.jhomlala/better_player_plus")
     }
 
     public func createArgsCodec() -> (FlutterMessageCodec & NSObjectProtocol) { FlutterStandardMessageCodec.sharedInstance() }

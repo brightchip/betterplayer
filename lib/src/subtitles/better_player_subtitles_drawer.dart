@@ -5,26 +5,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 
 class BetterPlayerSubtitlesDrawer extends StatefulWidget {
-  const BetterPlayerSubtitlesDrawer({
-    super.key,
-    required this.subtitles,
-    required this.betterPlayerController,
-    this.betterPlayerSubtitlesConfiguration,
-    required this.playerVisibilityStream,
-  });
   final List<BetterPlayerSubtitle> subtitles;
   final BetterPlayerController betterPlayerController;
   final BetterPlayerSubtitlesConfiguration? betterPlayerSubtitlesConfiguration;
   final Stream<bool> playerVisibilityStream;
 
+  const BetterPlayerSubtitlesDrawer({
+    Key? key,
+    required this.subtitles,
+    required this.betterPlayerController,
+    this.betterPlayerSubtitlesConfiguration,
+    required this.playerVisibilityStream,
+  }) : super(key: key);
+
   @override
-  State<BetterPlayerSubtitlesDrawer> createState() => _BetterPlayerSubtitlesDrawerState();
+  _BetterPlayerSubtitlesDrawerState createState() =>
+      _BetterPlayerSubtitlesDrawerState();
 }
 
-class _BetterPlayerSubtitlesDrawerState extends State<BetterPlayerSubtitlesDrawer> {
+class _BetterPlayerSubtitlesDrawerState
+    extends State<BetterPlayerSubtitlesDrawer> {
   final RegExp htmlRegExp =
       // ignore: unnecessary_raw_strings
-      RegExp(r'<[^>]*>', multiLine: true);
+      RegExp(r"<[^>]*>", multiLine: true);
   late TextStyle _innerTextStyle;
   late TextStyle _outerTextStyle;
 
@@ -37,7 +40,8 @@ class _BetterPlayerSubtitlesDrawerState extends State<BetterPlayerSubtitlesDrawe
 
   @override
   void initState() {
-    _visibilityStreamSubscription = widget.playerVisibilityStream.listen((state) {
+    _visibilityStreamSubscription =
+        widget.playerVisibilityStream.listen((state) {
       setState(() {
         _playerVisible = state;
       });
@@ -49,29 +53,33 @@ class _BetterPlayerSubtitlesDrawerState extends State<BetterPlayerSubtitlesDrawe
       _configuration = setupDefaultConfiguration();
     }
 
-    widget.betterPlayerController.videoPlayerController!.addListener(_updateState);
+    if (null == _configuration) {
+      _configuration = setupDefaultConfiguration();
+    }
+
+    widget.betterPlayerController.videoPlayerController
+        ?.addListener(_updateState);
 
     _outerTextStyle = TextStyle(
-      fontSize: _configuration!.fontSize,
-      fontFamily: _configuration!.fontFamily,
-      foreground: Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = _configuration!.outlineSize
-        ..color = _configuration!.outlineColor,
-    );
+        fontSize: _configuration!.fontSize,
+        fontFamily: _configuration!.fontFamily,
+        foreground: Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = _configuration!.outlineSize
+          ..color = _configuration!.outlineColor);
 
     _innerTextStyle = TextStyle(
-      fontFamily: _configuration!.fontFamily,
-      color: _configuration!.fontColor,
-      fontSize: _configuration!.fontSize,
-    );
+        fontFamily: _configuration!.fontFamily,
+        color: _configuration!.fontColor,
+        fontSize: _configuration!.fontSize);
 
     super.initState();
   }
 
   @override
   void dispose() {
-    widget.betterPlayerController.videoPlayerController!.removeListener(_updateState);
+    widget.betterPlayerController.videoPlayerController
+        ?.removeListener(_updateState);
     _visibilityStreamSubscription.cancel();
     super.dispose();
   }
@@ -80,7 +88,8 @@ class _BetterPlayerSubtitlesDrawerState extends State<BetterPlayerSubtitlesDrawe
   void _updateState() {
     if (mounted) {
       setState(() {
-        _latestValue = widget.betterPlayerController.videoPlayerController!.value;
+        _latestValue =
+            widget.betterPlayerController.videoPlayerController?.value;
       });
     }
   }
@@ -90,18 +99,23 @@ class _BetterPlayerSubtitlesDrawerState extends State<BetterPlayerSubtitlesDrawe
     final BetterPlayerSubtitle? subtitle = _getSubtitleAtCurrentPosition();
     widget.betterPlayerController.renderedSubtitle = subtitle;
     final List<String> subtitles = subtitle?.texts ?? [];
-    final List<Widget> textWidgets = subtitles.map(_buildSubtitleTextWidget).toList();
+    final List<Widget> textWidgets =
+        subtitles.map((text) => _buildSubtitleTextWidget(text)).toList();
 
-    return SizedBox(
+    return Container(
       height: double.infinity,
       width: double.infinity,
       child: Padding(
         padding: EdgeInsets.only(
-          bottom: _playerVisible ? _configuration!.bottomPadding + 30 : _configuration!.bottomPadding,
-          left: _configuration!.leftPadding,
-          right: _configuration!.rightPadding,
+            bottom: _playerVisible
+                ? _configuration!.bottomPadding + 30
+                : _configuration!.bottomPadding,
+            left: _configuration!.leftPadding,
+            right: _configuration!.rightPadding),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: textWidgets,
         ),
-        child: Column(mainAxisAlignment: MainAxisAlignment.end, children: textWidgets),
       ),
     );
   }
@@ -112,7 +126,8 @@ class _BetterPlayerSubtitlesDrawerState extends State<BetterPlayerSubtitlesDrawe
     }
 
     final Duration position = _latestValue!.position;
-    for (final BetterPlayerSubtitle subtitle in widget.betterPlayerController.subtitlesLines) {
+    for (final BetterPlayerSubtitle subtitle
+        in widget.betterPlayerController.subtitlesLines) {
       if (subtitle.start! <= position && subtitle.end! >= position) {
         return subtitle;
       }
@@ -120,25 +135,40 @@ class _BetterPlayerSubtitlesDrawerState extends State<BetterPlayerSubtitlesDrawe
     return null;
   }
 
-  Widget _buildSubtitleTextWidget(String subtitleText) => Row(
-    children: [
+  Widget _buildSubtitleTextWidget(String subtitleText) {
+    return Row(children: [
       Expanded(
-        child: Align(alignment: _configuration!.alignment, child: _getTextWithStroke(subtitleText)),
+        child: Align(
+          alignment: _configuration!.alignment,
+          child: _getTextWithStroke(subtitleText),
+        ),
       ),
-    ],
-  );
+    ]);
+  }
 
-  Widget _getTextWithStroke(String subtitleText) => ColoredBox(
-    color: _configuration!.backgroundColor,
-    child: Stack(
-      children: [
-        if (_configuration!.outlineEnabled) _buildHtmlWidget(subtitleText, _outerTextStyle) else const SizedBox(),
-        _buildHtmlWidget(subtitleText, _innerTextStyle),
-      ],
-    ),
-  );
+  Widget _getTextWithStroke(String subtitleText) {
+    return Container(
+      color: _configuration!.backgroundColor,
+      child: Stack(
+        children: [
+          if (_configuration!.outlineEnabled)
+            _buildHtmlWidget(subtitleText, _outerTextStyle)
+          else
+            const SizedBox(),
+          _buildHtmlWidget(subtitleText, _innerTextStyle)
+        ],
+      ),
+    );
+  }
 
-  Widget _buildHtmlWidget(String text, TextStyle textStyle) => HtmlWidget(text, textStyle: textStyle);
+  Widget _buildHtmlWidget(String text, TextStyle textStyle) {
+    return HtmlWidget(
+      text,
+      textStyle: textStyle,
+    );
+  }
 
-  BetterPlayerSubtitlesConfiguration setupDefaultConfiguration() => const BetterPlayerSubtitlesConfiguration();
+  BetterPlayerSubtitlesConfiguration setupDefaultConfiguration() {
+    return const BetterPlayerSubtitlesConfiguration();
+  }
 }

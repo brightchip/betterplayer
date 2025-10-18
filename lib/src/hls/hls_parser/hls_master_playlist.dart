@@ -1,13 +1,13 @@
-import 'package:better_player_plus/src/hls/hls_parser/drm_init_data.dart';
-import 'package:better_player_plus/src/hls/hls_parser/format.dart';
-import 'package:better_player_plus/src/hls/hls_parser/playlist.dart';
-import 'package:better_player_plus/src/hls/hls_parser/rendition.dart';
-import 'package:better_player_plus/src/hls/hls_parser/variant.dart';
+import 'drm_init_data.dart';
+import 'format.dart';
+import 'playlist.dart';
+import 'rendition.dart';
+import 'variant.dart';
 
 class HlsMasterPlaylist extends HlsPlaylist {
   HlsMasterPlaylist({
-    super.baseUri,
-    super.tags = const [], // ignore: always_specify_types
+    String? baseUri,
+    List<String> tags = const [], // ignore: always_specify_types
     this.variants = const [], // ignore: always_specify_types
     this.videos = const [], // ignore: always_specify_types
     this.audios = const [], // ignore: always_specify_types
@@ -15,10 +15,16 @@ class HlsMasterPlaylist extends HlsPlaylist {
     this.closedCaptions = const [], // ignore: always_specify_types
     this.muxedAudioFormat,
     this.muxedCaptionFormats = const [], // ignore: always_specify_types
-    super.hasIndependentSegments = false,
+    bool hasIndependentSegments = false,
     this.variableDefinitions = const {}, // ignore: always_specify_types
     this.sessionKeyDrmInitData = const [], // ignore: always_specify_types
-  }) : mediaPlaylistUrls = _getMediaPlaylistUrls(variants, [videos, audios, subtitles, closedCaptions]);
+  })  : mediaPlaylistUrls = _getMediaPlaylistUrls(
+            variants, [videos, audios, subtitles, closedCaptions]),
+        // ignore: always_specify_types
+        super(
+            baseUri: baseUri,
+            tags: tags,
+            hasIndependentSegments: hasIndependentSegments);
 
   /// All of the media playlist URLs referenced by the playlist.
   final List<Uri?> mediaPlaylistUrls;
@@ -52,16 +58,17 @@ class HlsMasterPlaylist extends HlsPlaylist {
   /// DRM initialization data derived from #EXT-X-SESSION-KEY tags.
   final List<DrmInitData> sessionKeyDrmInitData;
 
-  static List<Uri?> _getMediaPlaylistUrls(List<Variant> variants, List<List<Rendition>> renditionList) {
+  static List<Uri?> _getMediaPlaylistUrls(
+      List<Variant> variants, List<List<Rendition>> renditionList) {
     final uriList = <Uri?>[];
-    for (final element in variants) {
+    variants.forEach((element) {
       uriList.add(element.url);
-    }
-    for (final element in renditionList) {
+    });
+    renditionList.forEach((element) {
       for (final value in element) {
         uriList.add(value.url);
       }
-    }
+    });
     return uriList;
   }
 }

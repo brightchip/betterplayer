@@ -4,11 +4,11 @@ version '1.0-SNAPSHOT'
 buildscript {
 
     // ext.exoPlayerVersion = "2.19.1"
-    ext.media3Version = '1.5.1'
-    ext.lifecycleVersion = "2.8.7"
-    ext.annotationVersion = "1.7.0"
-    ext.workVersion = "2.10.0"
-    ext.coreVersion = "1.6.0"
+    ext.media3Version = '1.8.0'
+    ext.lifecycleVersion = "2.9.4"
+    ext.annotationVersion = "1.9.1"
+    ext.workVersion = "2.10.5"
+    ext.coreVersion = "1.17.0"
     
 
     repositories {
@@ -17,7 +17,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.7.3'
+        classpath 'com.android.tools.build:gradle:8.9.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.0"
     }
 }
@@ -68,7 +68,7 @@ android {
         implementation("androidx.media3:media3-common:$media3Version")
         implementation "androidx.media3:media3-session:$media3Version"
         
-        implementation("com.github.bumptech.glide:glide:4.15.1")
+        implementation("com.github.bumptech.glide:glide:5.0.5")
 
         implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion"
         implementation "androidx.lifecycle:lifecycle-common:$lifecycleVersion"

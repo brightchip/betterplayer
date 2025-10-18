@@ -386,10 +386,12 @@ internal class BetterPlayer(
             type = Util.inferContentTypeForExtension(lastPathSegment.split(".")[1])
         } else {
             type = when (formatHint) {
-                FORMAT_SS -> C.CONTENT_TYPE_SS
+                         FORMAT_SS -> C.CONTENT_TYPE_SS
                 FORMAT_DASH -> C.CONTENT_TYPE_DASH
                 FORMAT_HLS -> C.CONTENT_TYPE_HLS
                 FORMAT_OTHER -> C.CONTENT_TYPE_OTHER
+                FORMAT_MP4 -> C.CONTENT_TYPE_OTHER
+                FORMAT_RTSP -> C.CONTENT_TYPE_RTSP
                 else -> -1
             }
         }
@@ -781,7 +783,9 @@ internal class BetterPlayer(
         private const val FORMAT_SS = "ss"
         private const val FORMAT_DASH = "dash"
         private const val FORMAT_HLS = "hls"
+        private const val FORMAT_RTSP = "rtsp"
         private const val FORMAT_OTHER = "other"
+        private const val  FORMAT_MP4 = "mp4"
         private const val DEFAULT_NOTIFICATION_CHANNEL = "BETTER_PLAYER_NOTIFICATION"
         private const val NOTIFICATION_ID = 20772077
 

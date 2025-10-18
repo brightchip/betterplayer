@@ -1,13 +1,5 @@
-
-
 class VariantInfo {
-  VariantInfo({
-    this.bitrate,
-    this.videoGroupId,
-    this.audioGroupId,
-    this.subtitleGroupId,
-    this.captionGroupId,
-  });
+  VariantInfo({this.bitrate, this.videoGroupId, this.audioGroupId, this.subtitleGroupId, this.captionGroupId});
 
   /// The bitrate as declared by the EXT-X-STREAM-INF tag. */
   final int? bitrate;
@@ -31,8 +23,7 @@ class VariantInfo {
   @override
   bool operator ==(Object other) {
     if (other is VariantInfo) {
-      return other.runtimeType == runtimeType &&
-          other.bitrate == bitrate &&
+      return other.bitrate == bitrate &&
           other.videoGroupId == videoGroupId &&
           other.audioGroupId == audioGroupId &&
           other.subtitleGroupId == subtitleGroupId &&

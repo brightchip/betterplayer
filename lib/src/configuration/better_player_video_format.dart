@@ -1,2 +1,2 @@
 ///Representation of possible video formats in Better Player.
-enum BetterPlayerVideoFormat { dash, hls, ss, other, mp4 }
+enum BetterPlayerVideoFormat { dash, hls, ss, other }

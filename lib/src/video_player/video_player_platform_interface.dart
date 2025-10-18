@@ -6,10 +6,11 @@
 import 'dart:async';
 
 // Flutter imports:
-import 'package:better_player/src/configuration/better_player_buffering_configuration.dart';
+import 'package:better_player_plus/src/configuration/better_player_buffering_configuration.dart';
+import 'package:better_player_plus/src/video_player/method_channel_video_player.dart';
+import 'package:better_player_plus/src/video_player/video_player.dart' show VideoPlayerController;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'method_channel_video_player.dart';
 
 /// The interface that implementations of video_player must implement.
 ///
@@ -37,14 +38,15 @@ abstract class VideoPlayerPlatform {
   ///
   /// Defaults to [MethodChannelVideoPlayer].
   static VideoPlayerPlatform get instance => _instance;
+
+  // TODO(amirh): Extract common platform interface logic.
   // https://github.com/flutter/flutter/issues/43368
   static set instance(VideoPlayerPlatform instance) {
     if (!instance.isMock) {
       try {
         instance._verifyProvidesDefaultImplementations();
       } catch (_) {
-        throw AssertionError(
-            'Platform interfaces must not be implemented with `implements`');
+        throw AssertionError('Platform interfaces must not be implemented with `implements`');
       }
     }
     _instance = instance;
@@ -64,8 +66,7 @@ abstract class VideoPlayerPlatform {
   }
 
   /// Creates an instance of a video player and returns its textureId.
-  Future<int?> create(
-      {BetterPlayerBufferingConfiguration? bufferingConfiguration}) {
+  Future<int?> create({BetterPlayerBufferingConfiguration? bufferingConfiguration}) {
     throw UnimplementedError('create() has not been implemented.');
   }
 
@@ -115,8 +116,7 @@ abstract class VideoPlayerPlatform {
   }
 
   /// Sets the video track parameters (used to select quality of the video)
-  Future<void> setTrackParameters(
-      int? textureId, int? width, int? height, int? bitrate) {
+  Future<void> setTrackParameters(int? textureId, int? width, int? height, int? bitrate) {
     throw UnimplementedError('setTrackParameters() has not been implemented.');
   }
 
@@ -136,21 +136,17 @@ abstract class VideoPlayerPlatform {
   }
 
   ///Enables PiP mode.
-  Future<void> enablePictureInPicture(int? textureId, double? top, double? left,
-      double? width, double? height) {
-    throw UnimplementedError(
-        'enablePictureInPicture() has not been implemented.');
+  Future<void> enablePictureInPicture(int? textureId, double? top, double? left, double? width, double? height) {
+    throw UnimplementedError('enablePictureInPicture() has not been implemented.');
   }
 
   ///Disables PiP mode.
   Future<void> disablePictureInPicture(int? textureId) {
-    throw UnimplementedError(
-        'disablePictureInPicture() has not been implemented.');
+    throw UnimplementedError('disablePictureInPicture() has not been implemented.');
   }
 
   Future<bool?> isPictureInPictureEnabled(int? textureId) {
-    throw UnimplementedError(
-        'isPictureInPictureEnabled() has not been implemented.');
+    throw UnimplementedError('isPictureInPictureEnabled() has not been implemented.');
   }
 
   Future<void> setAudioTrack(int? textureId, String? name, int? index) {
@@ -166,7 +162,7 @@ abstract class VideoPlayerPlatform {
   }
 
   /// Returns a widget displaying the video with a given textureID.
-  Widget buildView(int textureId) {
+  Widget buildView(int? textureId) {
     throw UnimplementedError('buildView() has not been implemented.');
   }
 
@@ -182,12 +178,6 @@ abstract class VideoPlayerPlatform {
 /// Description of the data source used to create an instance of
 /// the video player.
 class DataSource {
-  /// The maximum cache size to keep on disk in bytes.
-  static const int _maxCacheSize = 100 * 1024 * 1024;
-
-  /// The maximum size of each individual file in bytes.
-  static const int _maxCacheFileSize = 10 * 1024 * 1024;
-
   /// Constructs an instance of [DataSource].
   ///
   /// The [sourceType] is always required.
@@ -223,10 +213,15 @@ class DataSource {
     this.certificateUrl,
     this.drmHeaders,
     this.activityName,
-    this.packageName,
     this.clearKey,
     this.videoExtension,
   }) : assert(uri == null || asset == null);
+
+  /// The maximum cache size to keep on disk in bytes.
+  static const int _maxCacheSize = 100 * 1024 * 1024;
+
+  /// The maximum size of each individual file in bytes.
+  static const int _maxCacheFileSize = 10 * 1024 * 1024;
 
   /// Describes the type of data source this [VideoPlayerController]
   /// is constructed with.
@@ -256,11 +251,6 @@ class DataSource {
         return 'hls';
       case VideoFormat.dash:
         return 'dash';
-      case VideoFormat.mp4:
-        return 'mp4';
-
-      case VideoFormat.rtsp:
-        return 'rtsp';
       case VideoFormat.other:
         return 'other';
       default:
@@ -305,39 +295,36 @@ class DataSource {
 
   final String? activityName;
 
-  final String? packageName;
-
   final String? clearKey;
 
   final String? videoExtension;
 
   /// Key to compare DataSource
   String get key {
-    String? result = "";
+    String? result = '';
 
     if (uri != null && uri!.isNotEmpty) {
       result = uri;
     } else if (package != null && package!.isNotEmpty) {
-      result = "$package:$asset";
+      result = '$package:$asset';
     } else {
       result = asset;
     }
 
     if (formatHint != null) {
-      result = "$result:$rawFormalHint";
+      result = '$result:$rawFormalHint';
     }
 
     return result!;
   }
 
   @override
-  String toString() {
-    return 'DataSource{sourceType: $sourceType, uri: $uri certificateUrl: $certificateUrl, formatHint:'
-        ' $formatHint, asset: $asset, package: $package, headers: $headers,'
-        ' useCache: $useCache,maxCacheSize: $maxCacheSize, maxCacheFileSize: '
-        '$maxCacheFileSize, showNotification: $showNotification, title: $title,'
-        ' author: $author}';
-  }
+  String toString() =>
+      'DataSource{sourceType: $sourceType, uri: $uri certificateUrl: $certificateUrl, formatHint:'
+      ' $formatHint, asset: $asset, package: $package, headers: $headers,'
+      ' useCache: $useCache,maxCacheSize: $maxCacheSize, maxCacheFileSize: '
+      '$maxCacheFileSize, showNotification: $showNotification, title: $title,'
+      ' author: $author}';
 }
 
 /// The way in which the video was originally loaded.
@@ -352,7 +339,7 @@ enum DataSourceType {
   network,
 
   /// The video was loaded off of the local filesystem.
-  file
+  file,
 }
 
 /// The file format of the given video.
@@ -365,14 +352,9 @@ enum VideoFormat {
 
   /// Smooth Streaming.
   ss,
-  mp4,
-
-  /// RTSP Streaming.
-  rtsp,
 
   /// Any format other than the other ones defined in this enum.
-  ///
-  other
+  other,
 }
 
 /// Event emitted from the platform implementation.
@@ -383,14 +365,7 @@ class VideoEvent {
   ///
   /// Depending on the [eventType], the [duration], [size] and [buffered]
   /// arguments can be null.
-  VideoEvent({
-    required this.eventType,
-    required this.key,
-    this.duration,
-    this.size,
-    this.buffered,
-    this.position,
-  });
+  VideoEvent({required this.eventType, required this.key, this.duration, this.size, this.buffered, this.position});
 
   /// The type of the event.
   final VideoEventType eventType;
@@ -419,23 +394,18 @@ class VideoEvent {
   final Duration? position;
 
   @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        other is VideoEvent &&
-            runtimeType == other.runtimeType &&
-            key == other.key &&
-            eventType == other.eventType &&
-            duration == other.duration &&
-            size == other.size &&
-            listEquals(buffered, other.buffered);
-  }
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is VideoEvent &&
+          runtimeType == other.runtimeType &&
+          key == other.key &&
+          eventType == other.eventType &&
+          duration == other.duration &&
+          size == other.size &&
+          listEquals(buffered, other.buffered);
 
   @override
-  int get hashCode =>
-      eventType.hashCode ^
-      duration.hashCode ^
-      size.hashCode ^
-      buffered.hashCode;
+  int get hashCode => eventType.hashCode ^ duration.hashCode ^ size.hashCode ^ buffered.hashCode;
 }
 
 /// Type of the event.
@@ -506,9 +476,7 @@ class DurationRange {
   /// For example, assume that the entire video is 4 minutes long. If [start] has
   /// a duration of one minute, this will return `0.25` since the DurationRange
   /// starts 25% of the way through the video's total length.
-  double startFraction(Duration duration) {
-    return start.inMilliseconds / duration.inMilliseconds;
-  }
+  double startFraction(Duration duration) => start.inMilliseconds / duration.inMilliseconds;
 
   /// Assumes that [duration] is the total length of the video that this
   /// DurationRange is a segment form. It returns the percentage that [start] is
@@ -517,9 +485,7 @@ class DurationRange {
   /// For example, assume that the entire video is 4 minutes long. If [end] has a
   /// duration of two minutes, this will return `0.5` since the DurationRange
   /// ends 50% of the way through the video's total length.
-  double endFraction(Duration duration) {
-    return end.inMilliseconds / duration.inMilliseconds;
-  }
+  double endFraction(Duration duration) => end.inMilliseconds / duration.inMilliseconds;
 
   @override
   // ignore: no_runtimetype_tostring
@@ -528,10 +494,7 @@ class DurationRange {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is DurationRange &&
-          runtimeType == other.runtimeType &&
-          start == other.start &&
-          end == other.end;
+      other is DurationRange && runtimeType == other.runtimeType && start == other.start && end == other.end;
 
   @override
   int get hashCode => start.hashCode ^ end.hashCode;

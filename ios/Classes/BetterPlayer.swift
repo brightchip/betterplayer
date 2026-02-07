@@ -167,7 +167,7 @@ public class BetterPlayer: NSObject, FlutterPlatformView, FlutterStreamHandler, 
             let _videoExt = videoExtension
             item = cacheManager.getCachingPlayerItemForNormalPlayback(url, cacheKey: _cacheKey, videoExtension: _videoExt, headers: finalHeaders as NSDictionary as! [NSObject: AnyObject]) ?? AVPlayerItem(url: url)
         } else {
-            var asset: AVURLAsset?
+            var asset: AVURLAsset
 
             var cusMime = false
 
